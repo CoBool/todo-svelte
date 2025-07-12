@@ -1,3 +1,5 @@
+import { getContext } from "svelte";
+
 export const TODO_STORE = Symbol("TODO_STORE");
 
 export function createTodoStore() {
@@ -12,7 +14,8 @@ export function createTodoStore() {
         }
     });
 
-    let completedCount = $derived(todos.filter(todo => todo.completed).length);
+    let completedCount = $derived(todos.reduce((count, todo) => 
+        todo.completed ? count + 1 : count, 0));
 
     function addTodo(title) {
         if (!title.trim()) return;
@@ -22,6 +25,13 @@ export function createTodoStore() {
             title: title.trim(),
             completed: false
         })
+    }
+
+    function editTodo(id, newTitle) {
+        const todo = todos.find(todo => todo.id === id);
+        if (todo && newTitle.trim()) {
+            todo.title = newTitle.trim();
+        }
     }
 
     function toggleTodo(id) {
@@ -41,6 +51,24 @@ export function createTodoStore() {
         filter = newFilter;
     }
 
+    function loadFromStorage() {
+        const saved = localStorage.getItem('todos');
+    
+        if (saved) {
+            todos = JSON.parse(saved);
+        }
+    }
+
+    function saveToStorage() {
+        localStorage.setItem('todos', JSON.stringify(todos));
+    }
+
+    $effect(() => {
+        saveToStorage();
+    });
+
+    loadFromStorage();
+
     return {
         get todos() { return todos; },
         get filter() { return filter; },
@@ -48,9 +76,19 @@ export function createTodoStore() {
         get completedCount() { return completedCount; },
 
         addTodo,
+        editTodo,
         toggleTodo,
         deleteTodo,
         clearCompleted,
         setFilter,
     }
 }
+
+export function getTodoStore() {
+    const store = getContext(TODO_STORE);
+    if (!store) {
+        throw new Error('TodoStore must be used within TodoProvider');
+    }
+    return store;
+}
+
