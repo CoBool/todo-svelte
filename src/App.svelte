@@ -96,7 +96,6 @@
                   {
                     container: 'ul',
                     dragData: todo,
-                    
                   }
                 }
                 use:droppable={
