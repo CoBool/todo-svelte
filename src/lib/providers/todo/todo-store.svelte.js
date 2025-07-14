@@ -54,12 +54,16 @@ export function createTodoStore() {
     if (filtered[newIndex]) {
       to = todos.findIndex(t => t.id === filtered[newIndex].id);
     } else {
-      to = todos.length;
+      to = todos.length - 1; // 맨 끝에 삽입
     }
     if (from === -1 || to === -1 || from === to) return;
     const updated = [...todos];
-    updated.splice(from, 1);
-    updated.splice(to > from ? to - 1 : to, 0, item);
+    const [moved] = updated.splice(from, 1);
+    if (to >= updated.length) {
+      updated.push(moved);
+    } else {
+      updated.splice(to, 0, moved);
+    }
     todos = updated;
   }
 
@@ -88,6 +92,8 @@ export function createTodoStore() {
   });
 
   loadFromStorage();
+
+  $inspect(todos);
 
   return {
     get todos() {

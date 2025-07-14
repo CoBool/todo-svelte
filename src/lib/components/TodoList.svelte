@@ -1,4 +1,5 @@
 <script>
+  import { tick } from "svelte";
   import { sortable } from "../actions/sortable.svelte";
   import { getTodoStore } from "../providers/todo/todo-store.svelte";
 
@@ -24,9 +25,9 @@
   }
 
   let sortableOptions = {
+    forceFallback: true,
     ghostClass: "opacity-50",
     filter: "input,button", // input, button에서는 드래그 불가
-    
     animation: 150,
     onEnd: (evt) => {
       TodoContext.reorderTodos(
@@ -36,6 +37,8 @@
       );
     },
   };
+
+  
 </script>
 
 {#if TodoContext.todos.length !== 0}
@@ -43,13 +46,11 @@
     <div
       class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
     >
-      {#key TodoContext.filter}
-        <ul class="divide-y divide-gray-200" use:sortable={sortableOptions}>
-          {#each TodoContext.filteredTodos as todo (todo.id)}
-            <TodoItem {todo} {editId} {handleEdit} {handleEditCancel} />
-          {/each}
-        </ul>
-      {/key}
+      <ul class="divide-y divide-gray-200" use:sortable={sortableOptions}>
+        {#each TodoContext.filteredTodos as todo (todo.id)}
+          <TodoItem {todo} {editId} {handleEdit} {handleEditCancel} />
+        {/each}
+      </ul>
     </div>
   {:else}
     <div
