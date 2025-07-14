@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
-    "@thisux/sveltednd": "^0.0.20",
+    "sortablejs": "^1.15.6",
     "tailwindcss": "^4.1.11"
   }
 }
