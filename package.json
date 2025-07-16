@@ -14,8 +14,10 @@
     "vite": "^7.0.4"
   },
   "dependencies": {
+    "@dnd-kit-svelte/core": "^0.0.9",
+    "@dnd-kit-svelte/sortable": "^0.0.9",
+    "@dnd-kit-svelte/utilities": "^0.0.9",
     "@tailwindcss/vite": "^4.1.11",
-    "sortablejs": "^1.15.6",
     "tailwindcss": "^4.1.11"
   }
 }

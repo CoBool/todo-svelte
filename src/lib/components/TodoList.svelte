@@ -1,6 +1,4 @@
 <script>
-  import { tick } from "svelte";
-  import { sortable } from "../actions/sortable.svelte";
   import { getTodoStore } from "../providers/todo/todo-store.svelte";
 
   import TodoItem from "./TodoItem.svelte";
@@ -23,22 +21,6 @@
   function handleEditCancel() {
     editId = null;
   }
-
-  let sortableOptions = {
-    forceFallback: true,
-    ghostClass: "opacity-50",
-    filter: "input,button", // input, button에서는 드래그 불가
-    animation: 150,
-    onEnd: (evt) => {
-      TodoContext.reorderTodos(
-        evt.oldIndex,
-        evt.newIndex,
-        TodoContext.filteredTodos
-      );
-    },
-  };
-
-  
 </script>
 
 {#if TodoContext.todos.length !== 0}
@@ -46,7 +28,7 @@
     <div
       class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
     >
-      <ul class="divide-y divide-gray-200" use:sortable={sortableOptions}>
+      <ul class="divide-y divide-gray-200">
         {#each TodoContext.filteredTodos as todo (todo.id)}
           <TodoItem {todo} {editId} {handleEdit} {handleEditCancel} />
         {/each}
