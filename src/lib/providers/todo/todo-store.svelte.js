@@ -47,43 +47,8 @@ export function createTodoStore() {
     todos = todos.filter((todo) => todo.id !== id);
   }
 
-  function reorderTodos(oldIndex, newIndex) {
-    if (oldIndex === newIndex || oldIndex == null || newIndex == null) {
-      return;
-    }
-
-    // dnd-kit-svelte 방식: 현재 필터된 배열 기준으로 처리
-    if (filter === "all") {
-      // 전체 필터: 직접 배열 조작
-      const result = $state.snapshot(todos);
-      const [removed] = result.splice(oldIndex, 1);
-      result.splice(newIndex, 0, removed);
-      todos = result;
-    } else {
-      // 필터링된 상태: filteredTodos 기준으로 전체 배열 재구성
-      const currentFiltered = $state.snapshot(filteredTodos);
-      const [removed] = currentFiltered.splice(oldIndex, 1);
-      currentFiltered.splice(newIndex, 0, removed);
-      
-      // 전체 배열에서 필터링된 항목들의 순서 업데이트
-      const filteredIds = new Set(currentFiltered.map(todo => todo.id));
-      const nonFilteredTodos = todos.filter(todo => !filteredIds.has(todo.id));
-      
-      // 새로운 순서로 배열 재구성
-      const newTodos = [];
-      let filteredIndex = 0;
-      
-      for (const originalTodo of todos) {
-        if (filteredIds.has(originalTodo.id)) {
-          newTodos.push(currentFiltered[filteredIndex]);
-          filteredIndex++;
-        } else {
-          newTodos.push(originalTodo);
-        }
-      }
-      
-      todos = newTodos;
-    }
+  function reorderTodos(newTodos) {  
+    todos = newTodos;
   }
 
   function clearCompleted() {

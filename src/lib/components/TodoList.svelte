@@ -1,4 +1,7 @@
 <script>
+  import { DndContext } from "@dnd-kit-svelte/core";
+  import { SortableContext, arrayMove } from "@dnd-kit-svelte/sortable";
+
   import { getTodoStore } from "../providers/todo/todo-store.svelte";
 
   import TodoItem from "./TodoItem.svelte";
@@ -21,6 +24,15 @@
   function handleEditCancel() {
     editId = null;
   }
+
+  function handleDragEnd({ active, over }) {
+    if (!over || active.id === over.id) return;
+    const oldIndex = TodoContext.todos.findIndex(
+      (item) => item.id === active.id
+    );
+    const newIndex = TodoContext.todos.findIndex((item) => item.id === over.id);
+    TodoContext.reorderTodos(arrayMove(TodoContext.todos, oldIndex, newIndex));
+  }
 </script>
 
 {#if TodoContext.todos.length !== 0}
@@ -28,11 +40,15 @@
     <div
       class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
     >
-      <ul class="divide-y divide-gray-200">
-        {#each TodoContext.filteredTodos as todo (todo.id)}
-          <TodoItem {todo} {editId} {handleEdit} {handleEditCancel} />
-        {/each}
-      </ul>
+      <DndContext onDragEnd={handleDragEnd}>
+        <SortableContext items={TodoContext.filteredTodos}>
+          <ul class="divide-y divide-gray-200">
+            {#each TodoContext.filteredTodos as todo (todo.id)}
+              <TodoItem {todo} {editId} {handleEdit} {handleEditCancel} />
+            {/each}
+          </ul>
+        </SortableContext>
+      </DndContext>
     </div>
   {:else}
     <div

@@ -1,4 +1,7 @@
 <script>
+  import { CSS, styleObjectToString } from "@dnd-kit-svelte/utilities";
+  import { useSortable } from "@dnd-kit-svelte/sortable";
+
   import { getTodoStore } from "../providers/todo/todo-store.svelte";
 
   let { todo, editId, handleEdit, handleEditCancel } = $props();
@@ -6,9 +9,29 @@
   const { toggleTodo, editTodo, deleteTodo } = getTodoStore();
 
   let editTitle = $state("");
+
+  const {
+    attributes,
+    listeners,
+    node,
+    transform,
+    transition,
+    isDragging,
+    isSorting,
+  } = useSortable({
+    id: todo.id,
+  });
+
+  const style = $derived(
+    styleObjectToString({
+      transform: CSS.Transform.toString(transform.current),
+      transition: isSorting.current ? transition.current : undefined,
+      zIndex: isDragging.current ? 1 : undefined,
+    })
+  );
 </script>
 
-<li class="p-4 transition-colors">
+<li class="p-4 transition-colors" bind:this={node.current} {...attributes.current} {...listeners.current} {style}>
   <div class="flex items-center gap-3">
     <input
       type="checkbox"
