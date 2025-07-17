@@ -4,17 +4,28 @@ export const TODO_STORE = Symbol("TODO_STORE");
 
 export function createTodoStore() {
   let todos = $state([]);
+  let searchQuery = $state("");
   let filter = $state("all");
 
   let filteredTodos = $derived.by(() => {
+    let baseTodos;
     switch (filter) {
       case "active":
-        return todos.filter((todo) => !todo.completed);
+        baseTodos = todos.filter((todo) => !todo.completed);
+        break;
       case "completed":
-        return todos.filter((todo) => todo.completed);
+        baseTodos = todos.filter((todo) => todo.completed);
+        break;
       default:
-        return todos;
+        baseTodos = todos;
+        break;
     }
+
+    if (searchQuery.trim()) {
+      return baseTodos.filter((todo) => todo.title.toLowerCase().includes(searchQuery.toLowerCase()));
+    }
+
+    return baseTodos;
   });
 
   let completedCount = $derived(
@@ -80,6 +91,12 @@ export function createTodoStore() {
   return {
     get todos() {
       return todos;
+    },
+    get searchQuery() {
+      return searchQuery;
+    },
+    set searchQuery(value) {
+      searchQuery = value;
     },
     get filter() {
       return filter;

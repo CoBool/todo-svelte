@@ -3,6 +3,7 @@
 
   import TodoForm from "./TodoForm.svelte";
   import TodoFilterGroup from "./TodoFilterGroup.svelte";
+  import SearchBar from "./SearchBar.svelte";
   import TodoList from "./TodoList.svelte";
 </script>
 
@@ -16,6 +17,9 @@
 
     <!-- 입력 폼 -->
     <TodoForm />
+
+    <!-- 검색 바 -->
+    <SearchBar />
 
     <!-- 필터 버튼들 -->
     <TodoFilterGroup />

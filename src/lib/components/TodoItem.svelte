@@ -1,7 +1,8 @@
 <script>
+
   import { CSS, styleObjectToString } from "@dnd-kit-svelte/utilities";
   import { useSortable } from "@dnd-kit-svelte/sortable";
-
+  import { GripVertical } from "@lucide/svelte";
   import { getTodoStore } from "../providers/todo/todo-store.svelte";
 
   let { todo, editId, handleEdit, handleEditCancel } = $props();
@@ -31,8 +32,9 @@
   );
 </script>
 
-<li class="p-4 transition-colors" bind:this={node.current} {...attributes.current} {...listeners.current} {style}>
+<li class="p-4 transition-colors" bind:this={node.current} {style}>
   <div class="flex items-center gap-3">
+    <GripVertical class="w-4 h-4 active:outline-none" {...attributes.current} {...listeners.current} />
     <input
       type="checkbox"
       checked={todo.completed}
